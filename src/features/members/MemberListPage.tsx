@@ -38,18 +38,19 @@ export const MemberListPage = () => {
   const [showCSVDialog, setShowCSVDialog] = useState(false)
 
   const filteredAndSortedData = (members || [])
-    .filter((user) => {
-      const matchesEmail = emailSearch === "" || user.email.toLowerCase().includes(emailSearch.toLowerCase())
+    .filter((members) => {
+      const matchesEmail = emailSearch === "" || members.email.toLowerCase().includes(emailSearch.toLowerCase())
 
-      const matchesAdminName = adminNameSearch === "" || user.name.toLowerCase().includes(adminNameSearch.toLowerCase())
+      const matchesAdminName =
+        adminNameSearch === "" || members.name.toLowerCase().includes(adminNameSearch.toLowerCase())
 
       const matchesOrganization =
         selectedOrganization === "" ||
         selectedOrganization === "all" ||
-        user.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
+        members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
 
-      const matchesRole = selectedRole === "すべて" || user.role === selectedRole
-      const matchesStatus = !hideInactiveAccounts || user.status === "有効"
+      const matchesRole = selectedRole === "すべて" || members.role === selectedRole
+      const matchesStatus = !hideInactiveAccounts || members.status === "有効"
 
       return matchesEmail && matchesAdminName && matchesOrganization && matchesRole && matchesStatus
     })
@@ -66,13 +67,13 @@ export const MemberListPage = () => {
   const currentData = filteredAndSortedData.slice(startIndex, endIndex)
 
   const handleCSVDownload = (adminType?: "AM管理者" | "外部管理者") => {
-    console.log("[v0] Starting CSV download for user permissions data", { adminType })
+    console.log("[v0] Starting CSV download for members permissions data", { adminType })
 
     // Filter data based on administrator type if specified
     let dataToExport = filteredAndSortedData
     if (adminType) {
-      dataToExport = filteredAndSortedData.filter((user) => {
-        const isAMAdmin = user.company === "イオンモール"
+      dataToExport = filteredAndSortedData.filter((members) => {
+        const isAMAdmin = members.company === "イオンモール"
         return adminType === "AM管理者" ? isAMAdmin : !isAMAdmin
       })
     }
@@ -92,17 +93,17 @@ export const MemberListPage = () => {
     ]
 
     // Use filtered data for CSV export
-    const csvData = dataToExport.map((user) => [
-      user.id,
-      user.name,
-      user.email,
-      user.company,
-      user.organization1,
-      user.organization2,
-      user.organization3,
-      user.role,
-      user.status,
-      user.registrationDate,
+    const csvData = dataToExport.map((members) => [
+      members.id,
+      members.name,
+      members.email,
+      members.company,
+      members.organization1,
+      members.organization2,
+      members.organization3,
+      members.role,
+      members.status,
+      members.registrationDate,
     ])
 
     // Create CSV content
@@ -255,7 +256,7 @@ export const MemberListPage = () => {
                 header: "操作",
                 render: (value) => (
                   <Button variant="secondary" className="px-3 py-1 text-sm" asChild>
-                    <Link to={`/user-permissions/edit/${value}`}>編集</Link>
+                    <Link to={`/members-permissions/edit/${value}`}>編集</Link>
                   </Button>
                 ),
               },
@@ -267,7 +268,7 @@ export const MemberListPage = () => {
             onPageChange={setCurrentPage}
             onItemsPerPageChange={setItemsPerPage}
             onCSVExport={handleCSVButtonClick}
-            onNewRecord={() => (window.location.href = "/user-permissions/register")}
+            onNewRecord={() => (window.location.href = "/members-permissions/register")}
             onBulkImport={() => console.log("Bulk import clicked")}
             sortBy="registrationDate"
             sortOrder={sortOrder}
