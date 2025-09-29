@@ -29,7 +29,7 @@ export const MemberListPage = () => {
   const [emailInput, setEmailInput] = useState("")
   const [adminNameInput, setAdminNameInput] = useState("")
   const [selectedOrganization, setSelectedOrganization] = useState("")
-  const [selectedRole] = useState("すべて")
+
   const [hideInactiveAccounts, setHideInactiveAccounts] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(30)
@@ -124,10 +124,9 @@ export const MemberListPage = () => {
           selectedOrganization === "all" ||
           members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
 
-        const matchesRole = selectedRole === "すべて" || members.role === selectedRole
         const matchesStatus = !hideInactiveAccounts || members.status === "有効"
 
-        return matchesEmail && matchesAdminName && matchesOrganization && matchesRole && matchesStatus
+        return matchesEmail && matchesAdminName && matchesOrganization && matchesStatus
       })
       .sort((a, b) => {
         const dateA = new Date(a.registrationDate).getTime()
