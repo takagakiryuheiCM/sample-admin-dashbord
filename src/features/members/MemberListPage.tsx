@@ -19,15 +19,15 @@ import { useMemberQuery, useOrganizationsQuery } from "@/features/members/hooks"
 import { Search } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import type { Member } from "./sample-data/member"
 
 export const MemberListPage = () => {
   const { data: members } = useMemberQuery()
   const { data: organizationOptions } = useOrganizationsQuery()
 
+  const [searchMembersResult, setSearchMembersResult] = useState<Member[]>(members)
   const [emailInput, setEmailInput] = useState("")
   const [adminNameInput, setAdminNameInput] = useState("")
-  const [emailSearch, setEmailSearch] = useState("")
-  const [adminNameSearch, setAdminNameSearch] = useState("")
   const [selectedOrganization, setSelectedOrganization] = useState("")
   const [selectedRole] = useState("すべて")
   const [hideInactiveAccounts, setHideInactiveAccounts] = useState(false)
@@ -37,42 +37,19 @@ export const MemberListPage = () => {
   const [activeMenu, setActiveMenu] = useState("管理者権限")
   const [showCSVDialog, setShowCSVDialog] = useState(false)
 
-  const filteredAndSortedData = (members || [])
-    .filter((members) => {
-      const matchesEmail = emailSearch === "" || members.email.toLowerCase().includes(emailSearch.toLowerCase())
-
-      const matchesAdminName =
-        adminNameSearch === "" || members.name.toLowerCase().includes(adminNameSearch.toLowerCase())
-
-      const matchesOrganization =
-        selectedOrganization === "" ||
-        selectedOrganization === "all" ||
-        members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
-
-      const matchesRole = selectedRole === "すべて" || members.role === selectedRole
-      const matchesStatus = !hideInactiveAccounts || members.status === "有効"
-
-      return matchesEmail && matchesAdminName && matchesOrganization && matchesRole && matchesStatus
-    })
-    .sort((a, b) => {
-      const dateA = new Date(a.registrationDate).getTime()
-      const dateB = new Date(b.registrationDate).getTime()
-      return sortOrder === "newest" ? dateB - dateA : dateA - dateB
-    })
-
-  const totalItems = filteredAndSortedData.length
+  const totalItems = searchMembersResult.length
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentData = filteredAndSortedData.slice(startIndex, endIndex)
+  const currentData = searchMembersResult.slice(startIndex, endIndex)
 
   const handleCSVDownload = (adminType?: "AM管理者" | "外部管理者") => {
     console.log("[v0] Starting CSV download for members permissions data", { adminType })
 
     // Filter data based on administrator type if specified
-    let dataToExport = filteredAndSortedData
+    let dataToExport = searchMembersResult
     if (adminType) {
-      dataToExport = filteredAndSortedData.filter((members) => {
+      dataToExport = searchMembersResult.filter((members) => {
         const isAMAdmin = members.company === "イオンモール"
         return adminType === "AM管理者" ? isAMAdmin : !isAMAdmin
       })
@@ -135,8 +112,30 @@ export const MemberListPage = () => {
   }
 
   const handleSearch = () => {
-    setEmailSearch(emailInput)
-    setAdminNameSearch(adminNameInput)
+    const filteredAndSortedData = members
+      .filter((members) => {
+        const matchesEmail = emailInput === "" || members.email.toLowerCase().includes(emailInput.toLowerCase())
+
+        const matchesAdminName =
+          adminNameInput === "" || members.name.toLowerCase().includes(adminNameInput.toLowerCase())
+
+        const matchesOrganization =
+          selectedOrganization === "" ||
+          selectedOrganization === "all" ||
+          members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
+
+        const matchesRole = selectedRole === "すべて" || members.role === selectedRole
+        const matchesStatus = !hideInactiveAccounts || members.status === "有効"
+
+        return matchesEmail && matchesAdminName && matchesOrganization && matchesRole && matchesStatus
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.registrationDate).getTime()
+        const dateB = new Date(b.registrationDate).getTime()
+        return sortOrder === "newest" ? dateB - dateA : dateA - dateB
+      })
+
+    setSearchMembersResult(filteredAndSortedData)
   }
 
   const getAdminType = (company: string) => {
