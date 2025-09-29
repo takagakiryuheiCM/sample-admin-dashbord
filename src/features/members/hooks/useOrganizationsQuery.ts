@@ -1,16 +1,16 @@
 import useSWR from "swr"
 import urlJoin from "url-join"
-import { organizationData } from "../sample-data/organization"
+import { organizationOptions } from "../sample-data/organization"
 
 export const useOrganizationsQuery = (shouldFetch = true) => {
   return useSWR(
-    shouldFetch ? urlJoin("api/members/") : null,
+    shouldFetch ? urlJoin("api/organizations/") : null,
     async (url: string) => {
       console.log("url", url)
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 500))
       // return response
-      return organizationData
+      return organizationOptions
 
       // In production, you would use:
       // const res = await fetch(url, {

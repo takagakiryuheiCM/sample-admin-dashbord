@@ -5,7 +5,7 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ChevronLeft, ChevronRight, Download, Plus, Upload, ArrowUpDown } from "lucide-react"
+import { ArrowUpDown, ChevronLeft, ChevronRight, Download, Plus, Upload } from "lucide-react"
 
 interface Column<T> {
   key: keyof T
@@ -74,7 +74,10 @@ function DataTable<T>({
         <div className="flex gap-4 items-center">
           <div className="flex gap-2 items-center">
             <span className="text-sm text-gray-600">表示</span>
-            <Select value={itemsPerPage.toString()} onValueChange={(value: string) => onItemsPerPageChange(Number(value))}>
+            <Select
+              value={itemsPerPage.toString()}
+              onValueChange={(value: string) => onItemsPerPageChange(Number(value))}
+            >
               <SelectTrigger className="w-20">
                 <SelectValue />
               </SelectTrigger>
@@ -179,7 +182,10 @@ function DataTable<T>({
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600">表示</span>
-          <Select value={itemsPerPage.toString()} onValueChange={(value: string) => onItemsPerPageChange(Number(value))}>
+          <Select
+            value={itemsPerPage.toString()}
+            onValueChange={(value: string) => onItemsPerPageChange(Number(value))}
+          >
             <SelectTrigger className="w-20">
               <SelectValue />
             </SelectTrigger>

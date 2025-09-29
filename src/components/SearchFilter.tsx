@@ -1,8 +1,8 @@
 "use client"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Autocomplete, type AutocompleteOption } from "@/components/ui/autocomplete"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search } from "lucide-react"
 
 interface FilterField {
@@ -11,8 +11,8 @@ interface FilterField {
   label: string
   placeholder?: string
   options?: { value: string; label: string }[] | AutocompleteOption[]
-  value: any
-  onChange: (value: any) => void
+  value: string
+  onChange: (value: string) => void
   colSpan?: number
   searchPlaceholder?: string
   emptyMessage?: string
@@ -64,7 +64,6 @@ export function SearchFilters({ fields, onSearch, showSearchButton = true }: Sea
                 placeholder={field.placeholder}
                 searchPlaceholder={field.searchPlaceholder}
                 emptyMessage={field.emptyMessage}
-                className="w-full"
               />
             )}
           </div>

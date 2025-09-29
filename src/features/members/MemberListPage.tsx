@@ -22,7 +22,7 @@ import { Link } from "react-router-dom"
 
 export const MemberListPage = () => {
   const { data: members } = useMemberQuery()
-  const { data: organizations } = useOrganizationsQuery()
+  const { data: organizationOptions } = useOrganizationsQuery()
 
   const [emailInput, setEmailInput] = useState("")
   const [adminNameInput, setAdminNameInput] = useState("")
@@ -46,7 +46,7 @@ export const MemberListPage = () => {
       const matchesOrganization =
         selectedOrganization === "" ||
         selectedOrganization === "all" ||
-        user.organization1 === organizations.find((opt) => opt.id === selectedOrganization)?.name
+        user.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
 
       const matchesRole = selectedRole === "すべて" || user.role === selectedRole
       const matchesStatus = !hideInactiveAccounts || user.status === "有効"
@@ -158,7 +158,7 @@ export const MemberListPage = () => {
             <div className="col-span-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">所属組織</label>
               <Autocomplete
-                options={organizations}
+                options={organizationOptions}
                 value={selectedOrganization}
                 onValueChange={setSelectedOrganization}
                 placeholder="組織を選択または検索"

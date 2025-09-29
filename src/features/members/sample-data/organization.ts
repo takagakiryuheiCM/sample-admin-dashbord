@@ -10,7 +10,7 @@ export interface Organization {
 // Extract unique organizations from sample members
 const organizations = Array.from(new Set(sampleMembers.map((member) => member.organization1).filter(Boolean)))
 
-export const organizationData: Organization[] = [
+export const organizationOptions: Organization[] = [
   { id: "all", name: "すべて", email: "", description: "全ての組織を表示" },
   ...organizations.map((org, index) => ({
     id: `org-${index}`,

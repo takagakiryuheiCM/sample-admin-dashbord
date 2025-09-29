@@ -1,21 +1,11 @@
 "use client"
 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react"
 
 export interface AutocompleteOption {
   id: string
@@ -43,17 +33,12 @@ export function Autocomplete({
 }: AutocompleteProps) {
   const [open, setOpen] = React.useState(false)
 
-  const selectedOption = options.find(option => option.id === value)
+  const selectedOption = options.find((option) => option.id === value)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-        >
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
           {selectedOption ? selectedOption.name : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -66,26 +51,17 @@ export function Autocomplete({
             {options.map((option) => (
               <CommandItem
                 key={option.id}
-                value={`${option.name} ${option.email || ''} ${option.description || ''}`}
+                value={`${option.name} ${option.email || ""} ${option.description || ""}`}
                 onSelect={() => {
                   onValueChange(option.id)
                   setOpen(false)
                 }}
               >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === option.id ? "opacity-100" : "opacity-0"
-                  )}
-                />
+                <Check className={cn("mr-2 h-4 w-4", value === option.id ? "opacity-100" : "opacity-0")} />
                 <div className="flex flex-col">
                   <span>{option.name}</span>
-                  {option.email && (
-                    <span className="text-sm text-muted-foreground">{option.email}</span>
-                  )}
-                  {option.description && (
-                    <span className="text-sm text-muted-foreground">{option.description}</span>
-                  )}
+                  {option.email && <span className="text-sm text-muted-foreground">{option.email}</span>}
+                  {option.description && <span className="text-sm text-muted-foreground">{option.description}</span>}
                 </div>
               </CommandItem>
             ))}
