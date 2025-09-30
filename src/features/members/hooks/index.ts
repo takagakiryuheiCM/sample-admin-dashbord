@@ -1,2 +1,5 @@
 export { useMemberQuery } from "./useMembersQuery"
+export { useMemberDetailQuery } from "./useMemberDetailQuery"
 export { useOrganizationsQuery } from "./useOrganizationsQuery"
+export { useUsageFunctionsQuery } from "./useUsageFunctionsQuery"
+export { useMemberUpdateMutation } from "./useMemberUpdateMutation"

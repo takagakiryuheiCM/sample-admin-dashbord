@@ -4,41 +4,30 @@ import type React from "react"
 
 import AppSidebar from "@/components/AppSidebar"
 import { PageHeader } from "@/components/PageHeader"
-import { Autocomplete, type AutocompleteOption } from "@/components/ui/autocomplete"
+import { Autocomplete } from "@/components/ui/autocomplete"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { sampleMembers as userData } from "./sample-data/member"
-import { sampleOrganizations as organizations } from "./sample-data/organization"
+import { useMemberDetailQuery } from "./hooks/useMemberDetailQuery"
+import { useMemberUpdateMutation } from "./hooks/useMemberUpdateMutation"
+import { useOrganizationsQuery } from "./hooks/useOrganizationsQuery"
+import { useUsageFunctionsQuery } from "./hooks/useUsageFunctionsQuery"
 
-const usageFunctions = [
-  "施設情報管理",
-  "会員管理",
-  "キャンペーン管理",
-  "イベント管理",
-  "お買物券管理",
-  "クーポン管理",
-  "情報コンテンツ管理",
-  "お知らせ管理",
-  "PUSH通知管理",
-  "利用者権限管理",
-]
-
-const getFieldRestrictions = (company: string) => {
+const getFieldRestrictions = (adminType: "AM管理者" | "外部管理者") => {
   const restrictions = {
     emailDisabled: false,
     organizationDisabled: false,
   }
 
-  if (company !== "イオンモール") {
+  if (adminType === "外部管理者") {
     restrictions.emailDisabled = true
   }
 
-  // 会社が「イオンモール」の場合、メールアドレスと所属組織を変更不可
-  if (company === "イオンモール") {
+  // AM管理者の場合、メールアドレスと所属組織を変更不可
+  if (adminType === "AM管理者") {
     restrictions.emailDisabled = true
     restrictions.organizationDisabled = true
   }
@@ -51,70 +40,28 @@ export const MemberEditPage = () => {
   const params = useParams()
   const userId = params.id as string
 
+  // Fetch data using custom hooks
+  const { data: member } = useMemberDetailQuery(userId)
+  const { data: organizations } = useOrganizationsQuery()
+  const { data: usageFunctions } = useUsageFunctionsQuery()
+  const { updateMember } = useMemberUpdateMutation()
+
+  // Derived state from member data
+  const userCompany = member.company
+  const adminType = userCompany === "イオンモール" ? "AM管理者" : "外部管理者"
+  const fieldRestrictions = getFieldRestrictions(adminType)
+
   // フォーム状態
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    organization: "",
-    isValid: true,
-    usageFunctions: [] as string[],
+    name: member.name,
+    email: member.email,
+    organization: member.organization1,
+    isValid: member.status === "有効",
+    usageFunctions: member.usageFunctions,
   })
 
-  const [userCompany, setUserCompany] = useState("")
-  const [adminType, setAdminType] = useState<"AM管理者" | "外部管理者">("外部管理者")
-  const [fieldRestrictions, setFieldRestrictions] = useState({
-    emailDisabled: false,
-    organizationDisabled: false,
-  })
-
-  // UI状態
-  const [organizationOptions, setOrganizationOptions] = useState<AutocompleteOption[]>(organizations)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
-
-  // ユーザーデータを読み込み
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        console.log("[v0] Loading user data for ID:", userId)
-
-        // サンプルデータから該当ユーザーを検索
-        const user = userData.find((u) => u.id === userId)
-        console.log("[v0] Found user:", user)
-
-        if (user) {
-          setUserCompany(user.company)
-          setAdminType(user.company === "イオンモール" ? "AM管理者" : "外部管理者")
-
-          const restrictions = getFieldRestrictions(user.company)
-          setFieldRestrictions(restrictions)
-
-          setFormData({
-            name: user.name,
-            email: user.email,
-            organization: user.organization1, // 組織1を使用
-            isValid: user.status === "有効",
-            usageFunctions: ["施設情報管理", "会員管理"], // サンプル機能
-          })
-        } else {
-          console.log("[v0] User not found for ID:", userId)
-          alert("ユーザーが見つかりません")
-          router("/members")
-        }
-      } catch (error) {
-        console.error("ユーザーデータの読み込みエラー:", error)
-        alert("ユーザーデータの読み込みに失敗しました")
-        router("/members")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    if (userId) {
-      loadUserData()
-    }
-  }, [userId, router])
 
   const handleInputChange = (field: string, value: string | boolean | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -132,33 +79,13 @@ export const MemberEditPage = () => {
   }
 
   const handleSelectAllFunctions = () => {
-    handleInputChange("usageFunctions", [...usageFunctions])
+    if (usageFunctions) {
+      handleInputChange("usageFunctions", [...usageFunctions])
+    }
   }
 
   const handleClearAllFunctions = () => {
     handleInputChange("usageFunctions", [])
-  }
-
-  const handleOrganizationSearch = (query: string) => {
-    // TODO: 実際のAPI呼び出しでインクリメンタルサーチを実装
-    console.log("[v0] Organization search query:", query)
-
-    if (!query) {
-      setOrganizationOptions(organizations)
-      return
-    }
-
-    const filtered = organizations.filter((org) => {
-      const searchQuery = query.toLowerCase()
-      return (
-        org.name.toLowerCase().includes(searchQuery) ||
-        org.id.toLowerCase().includes(searchQuery) ||
-        (org.email && org.email.toLowerCase().includes(searchQuery)) ||
-        (org.description && org.description.toLowerCase().includes(searchQuery))
-      )
-    })
-
-    setOrganizationOptions(filtered)
   }
 
   const validateForm = () => {
@@ -186,16 +113,8 @@ export const MemberEditPage = () => {
     setIsSubmitting(true)
 
     try {
-      // TODO: 実際のAPI呼び出し
-      // const response = await fetch(`/api/users/${userId}`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // })
+      await updateMember(userId, formData)
 
-      console.log("更新データ:", formData)
-
-      // 成功時の処理
       alert("管理者情報を更新しました。")
       router("/members")
     } catch (error) {
@@ -204,17 +123,6 @@ export const MemberEditPage = () => {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex h-screen bg-gray-50">
-        <AppSidebar activeMenu={"管理者管理"} />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-lg">読み込み中...</div>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -302,7 +210,7 @@ export const MemberEditPage = () => {
                         <Input value={formData.organization} className="bg-gray-50 text-gray-700" disabled readOnly />
                       ) : (
                         <Autocomplete
-                          options={organizationOptions}
+                          options={organizations}
                           value={formData.organization}
                           onValueChange={(value) => handleInputChange("organization", value)}
                           placeholder="組織を選択または検索..."
@@ -360,7 +268,7 @@ export const MemberEditPage = () => {
                       </Button>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      {usageFunctions.map((func) => (
+                      {usageFunctions?.map((func) => (
                         <div key={func} className="flex items-center space-x-2">
                           <Checkbox
                             id={`function-${func}`}

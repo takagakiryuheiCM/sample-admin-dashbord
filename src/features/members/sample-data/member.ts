@@ -9,6 +9,7 @@ export type Member = {
   role: "Admin" | "Editor" | "Viewer" | "その他"
   status: "有効" | "廃止"
   registrationDate: string
+  usageFunctions: string[]
 }
 
 export const sampleMembers: Member[] = [
@@ -23,6 +24,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-01-15",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000019",
@@ -35,6 +37,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-01-20",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000018",
@@ -47,6 +50,7 @@ export const sampleMembers: Member[] = [
     role: "Viewer",
     status: "有効",
     registrationDate: "2024-02-01",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000017",
@@ -59,6 +63,7 @@ export const sampleMembers: Member[] = [
     role: "その他",
     status: "廃止",
     registrationDate: "2024-02-10",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000016",
@@ -71,6 +76,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-02-15",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000015",
@@ -83,6 +89,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-03-01",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000014",
@@ -95,6 +102,7 @@ export const sampleMembers: Member[] = [
     role: "Viewer",
     status: "有効",
     registrationDate: "2024-03-05",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000013",
@@ -107,6 +115,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-03-10",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000012",
@@ -119,6 +128,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-03-15",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000011",
@@ -131,6 +141,7 @@ export const sampleMembers: Member[] = [
     role: "その他",
     status: "有効",
     registrationDate: "2024-03-20",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000030",
@@ -143,6 +154,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-04-01",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000029",
@@ -155,6 +167,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-04-02",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000028",
@@ -167,6 +180,7 @@ export const sampleMembers: Member[] = [
     role: "Viewer",
     status: "有効",
     registrationDate: "2024-04-03",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000027",
@@ -179,6 +193,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-04-04",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000026",
@@ -191,6 +206,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-04-05",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000025",
@@ -203,6 +219,7 @@ export const sampleMembers: Member[] = [
     role: "Viewer",
     status: "廃止",
     registrationDate: "2024-04-06",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000024",
@@ -215,6 +232,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-04-07",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000023",
@@ -227,6 +245,7 @@ export const sampleMembers: Member[] = [
     role: "その他",
     status: "有効",
     registrationDate: "2024-04-08",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000022",
@@ -239,6 +258,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-04-09",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000021",
@@ -251,6 +271,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-04-10",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000031",
@@ -263,6 +284,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-04-11",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000032",
@@ -275,6 +297,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-04-12",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000033",
@@ -287,6 +310,7 @@ export const sampleMembers: Member[] = [
     role: "Viewer",
     status: "有効",
     registrationDate: "2024-04-13",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000034",
@@ -299,6 +323,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-04-14",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000035",
@@ -311,6 +336,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "廃止",
     registrationDate: "2024-04-15",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000036",
@@ -323,6 +349,7 @@ export const sampleMembers: Member[] = [
     role: "Viewer",
     status: "有効",
     registrationDate: "2024-04-16",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000037",
@@ -335,6 +362,7 @@ export const sampleMembers: Member[] = [
     role: "Admin",
     status: "有効",
     registrationDate: "2024-04-17",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000038",
@@ -347,6 +375,7 @@ export const sampleMembers: Member[] = [
     role: "Editor",
     status: "有効",
     registrationDate: "2024-04-18",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000039",
@@ -359,6 +388,7 @@ export const sampleMembers: Member[] = [
     role: "Viewer",
     status: "有効",
     registrationDate: "2024-04-19",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
   {
     id: "0000000040",
@@ -371,5 +401,6 @@ export const sampleMembers: Member[] = [
     role: "その他",
     status: "有効",
     registrationDate: "2024-04-20",
+    usageFunctions: ["施設情許管理", "会員管理"],
   },
 ]
