@@ -83,4 +83,6 @@ const { data: organizations } = useOrganizationsQuery()
 ## [重要]開発する際に必ず実施すること
 
 - 既存のコードを確認し、アーキテクチャや実装パターンを把握、参考にしてコードを生成します。
+- コンポーネントの実装は、src/features/members/MemberListPage.tsx を参考にしてコードを生成します。
 - src/features/members/hooks/useMembersQuery.ts などのカスタムフックを参考にしてコードを生成します。
+- 必要なコンポーネントがあれば、shadcn/ui から install します
