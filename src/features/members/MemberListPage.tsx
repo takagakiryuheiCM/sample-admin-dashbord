@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useMemberQuery, useOrganizationsQuery } from "@/features/members/hooks"
 import { Search } from "lucide-react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import type { Member } from "./sample-data/member"
 
@@ -41,7 +41,25 @@ export const MemberListPage = () => {
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentData = searchMembersResult.slice(startIndex, endIndex)
+
+  const currentData = useMemo(
+    () =>
+      searchMembersResult
+        .slice(startIndex, endIndex)
+        .sort((a, b) => {
+          const dateA = new Date(a.registrationDate).getTime()
+          const dateB = new Date(b.registrationDate).getTime()
+          return sortOrder === "newest" ? dateB - dateA : dateA - dateB
+        })
+        .filter((members) => {
+          return (
+            selectedOrganization === "" ||
+            selectedOrganization === "all" ||
+            members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
+          )
+        }),
+    [searchMembersResult, selectedOrganization, organizationOptions, sortOrder, startIndex, endIndex],
+  )
 
   const handleCSVDownload = (adminType?: "AM管理者" | "外部管理者") => {
     console.log("[v0] Starting CSV download for members permissions data", { adminType })
@@ -112,29 +130,31 @@ export const MemberListPage = () => {
   }
 
   const handleSearch = () => {
-    const filteredAndSortedData = members
-      .filter((members) => {
-        const matchesEmail = emailInput === "" || members.email.toLowerCase().includes(emailInput.toLowerCase())
+    const filteredAndSortedData = members.filter((members) => {
+      const matchesEmail = emailInput === "" || members.email.toLowerCase().includes(emailInput.toLowerCase())
 
-        const matchesAdminName =
-          adminNameInput === "" || members.name.toLowerCase().includes(adminNameInput.toLowerCase())
+      const matchesAdminName =
+        adminNameInput === "" || members.name.toLowerCase().includes(adminNameInput.toLowerCase())
 
-        const matchesOrganization =
-          selectedOrganization === "" ||
-          selectedOrganization === "all" ||
-          members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
+      const matchesOrganization =
+        selectedOrganization === "" ||
+        selectedOrganization === "all" ||
+        members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
 
-        const matchesStatus = !hideInactiveAccounts || members.status === "有効"
-
-        return matchesEmail && matchesAdminName && matchesOrganization && matchesStatus
-      })
-      .sort((a, b) => {
-        const dateA = new Date(a.registrationDate).getTime()
-        const dateB = new Date(b.registrationDate).getTime()
-        return sortOrder === "newest" ? dateB - dateA : dateA - dateB
-      })
+      return matchesEmail && matchesAdminName && matchesOrganization
+    })
 
     setSearchMembersResult(filteredAndSortedData)
+  }
+
+  const handleHideInactiveAccounts = (isChecked: boolean) => {
+    setHideInactiveAccounts(isChecked)
+
+    if (isChecked) {
+      setSearchMembersResult(searchMembersResult.filter((members) => members.status === "有効"))
+    } else {
+      setSearchMembersResult(members)
+    }
   }
 
   const getAdminType = (company: string) => {
@@ -204,7 +224,9 @@ export const MemberListPage = () => {
                 <Checkbox
                   id="hide-inactive"
                   checked={hideInactiveAccounts}
-                  onCheckedChange={(checked) => setHideInactiveAccounts(checked as boolean)}
+                  onCheckedChange={(checked) => {
+                    handleHideInactiveAccounts(checked as boolean)
+                  }}
                 />
                 <label htmlFor="hide-inactive" className="text-sm font-medium text-gray-700">
                   廃止アカウントを表示しない
