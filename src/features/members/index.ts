@@ -1,1 +1,2 @@
-export { MemberListPage } from './MemberListPage'
+export { MemberEditPage } from "./MemberEditPage"
+export { MemberListPage } from "./MemberListPage"

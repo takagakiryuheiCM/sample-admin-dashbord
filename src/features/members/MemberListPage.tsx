@@ -271,7 +271,7 @@ export const MemberListPage = () => {
                 header: "操作",
                 render: (value) => (
                   <Button variant="secondary" className="px-3 py-1 text-sm" asChild>
-                    <Link to={`/members-permissions/edit/${value}`}>編集</Link>
+                    <Link to={`/members/edit/${value}`}>編集</Link>
                   </Button>
                 ),
               },
@@ -283,7 +283,7 @@ export const MemberListPage = () => {
             onPageChange={setCurrentPage}
             onItemsPerPageChange={setItemsPerPage}
             onCSVExport={() => setShowCSVDialog(true)}
-            onNewRecord={() => (window.location.href = "/members-permissions/register")}
+            onNewRecord={() => (window.location.href = "/members/register")}
             onBulkImport={() => console.log("Bulk import clicked")}
             sortBy="registrationDate"
             sortOrder={sortOrder}
