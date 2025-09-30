@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
 import { ChevronDown, FileText } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 interface MenuItem {
@@ -15,10 +15,9 @@ interface MenuItem {
 
 interface AppSidebarProps {
   activeMenu: string
-  onMenuChange: (menu: string) => void
 }
 
-export default function AppSidebar({ activeMenu, onMenuChange }: AppSidebarProps) {
+export default function AppSidebar({ activeMenu }: AppSidebarProps) {
   const navigate = useNavigate()
 
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>(() => ({
@@ -118,11 +117,10 @@ export default function AppSidebar({ activeMenu, onMenuChange }: AppSidebarProps
   }, [])
 
   const handleNavigation = useCallback(
-    (route: string, menuName: string) => {
-      onMenuChange(menuName)
+    (route: string) => {
       navigate(route)
     },
-    [onMenuChange, navigate],
+    [navigate],
   )
 
   const handleMenuClick = useCallback(
@@ -132,24 +130,21 @@ export default function AppSidebar({ activeMenu, onMenuChange }: AppSidebarProps
       if (item.hasSubmenu) {
         toggleMenu(item.id)
       } else {
-        onMenuChange(item.name)
         if (item.route) {
           navigate(item.route)
         }
       }
     },
-    [toggleMenu, onMenuChange, navigate],
+    [toggleMenu, navigate],
   )
 
   const handleSubMenuClick = useCallback(
     (subItem: { id: string; name: string; route?: string }) => {
       if (subItem.route) {
-        handleNavigation(subItem.route, subItem.name)
-      } else {
-        onMenuChange(subItem.name)
+        handleNavigation(subItem.route)
       }
     },
-    [handleNavigation, onMenuChange],
+    [handleNavigation],
   )
 
   const getMenuItemStyles = useMemo(

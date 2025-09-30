@@ -34,7 +34,6 @@ export const MemberListPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(30)
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest")
-  const [activeMenu, setActiveMenu] = useState("管理者権限")
   const [showCSVDialog, setShowCSVDialog] = useState(false)
 
   const totalItems = searchMembersResult.length
@@ -164,7 +163,7 @@ export const MemberListPage = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* サイドバー */}
-      <AppSidebar activeMenu={activeMenu} onMenuChange={setActiveMenu} />
+      <AppSidebar activeMenu={"管理者管理"} />
 
       {/* メインコンテンツ */}
       <div className="flex-1 flex flex-col overflow-hidden">
