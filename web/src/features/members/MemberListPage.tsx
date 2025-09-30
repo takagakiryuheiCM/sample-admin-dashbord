@@ -81,7 +81,7 @@ export const MemberListPage = () => {
           <div className="grid grid-cols-3 gap-4">
             {/* 所属組織 (Autocomplete) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">所属組織</label>
+              <label className="block text-left text-sm font-medium text-gray-700 mb-1">所属組織</label>
               <Autocomplete
                 options={organizationOptions}
                 value={selectedOrganization}
@@ -94,7 +94,7 @@ export const MemberListPage = () => {
 
             {/* メールアドレス */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+              <label className="block text-left text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
               <Input
                 placeholder="メールアドレスで検索"
                 value={emailInput}
@@ -105,7 +105,7 @@ export const MemberListPage = () => {
 
             {/* 管理者名 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">管理者名</label>
+              <label className="block text-left text-sm font-medium text-gray-700 mb-1">管理者名</label>
               <Input
                 placeholder="管理者名で検索"
                 value={adminNameInput}

@@ -35,7 +35,7 @@ export default function AppSidebar({ activeMenu }: AppSidebarProps) {
         name: "管理者・権限管理",
         hasSubmenu: true,
         submenu: [
-          { id: "user-permissions", name: "管理者管理", route: "/members" },
+          { id: "user-permissions", name: "管理者管理", route: "/" },
           { id: "permissions", name: "組織管理", route: "/permissions" },
         ],
       },
