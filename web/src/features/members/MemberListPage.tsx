@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import {
-  useMemberQuery,
-  useOrganizationsQuery,
+  useMemberCSVExport,
   useMemberFilters,
   useMemberPagination,
-  useMemberCSVExport,
+  useMemberQuery,
+  useOrganizationsQuery,
 } from "@/features/members/hooks"
 import { useState } from "react"
 import { Link } from "react-router-dom"
@@ -170,7 +170,7 @@ export const MemberListPage = () => {
                 header: "操作",
                 render: (value) => (
                   <Button variant="secondary" className="px-3 py-1 text-sm" asChild>
-                    <Link to={`/members/edit/${value}`}>編集</Link>
+                    <Link to={`/edit/${value}`}>編集</Link>
                   </Button>
                 ),
               },
@@ -182,7 +182,7 @@ export const MemberListPage = () => {
             onPageChange={setCurrentPage}
             onItemsPerPageChange={setItemsPerPage}
             onCSVExport={() => setShowCSVDialog(true)}
-            onNewRecord={() => (window.location.href = "/members/register")}
+            onNewRecord={() => (window.location.href = "/register")}
             onBulkImport={() => console.log("Bulk import clicked")}
             sortBy="registrationDate"
             sortOrder={sortOrder}

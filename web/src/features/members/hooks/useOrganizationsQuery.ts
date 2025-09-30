@@ -10,7 +10,9 @@ export const useOrganizationsQuery = (shouldFetch = true) => {
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 500))
       // return response
-      return sampleOrganizations
+      // id: "all"は除外
+      const filteredOrganizations = sampleOrganizations.filter((organization) => organization.id !== "all")
+      return filteredOrganizations
 
       // In production, you would use:
       // const res = await fetch(url, {

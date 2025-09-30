@@ -116,7 +116,7 @@ export const MemberEditPage = () => {
       await updateMember(userId, formData)
 
       alert("管理者情報を更新しました。")
-      router("/members")
+      router("/")
     } catch (error) {
       console.error("更新エラー:", error)
       alert("更新に失敗しました。もう一度お試しください。")
@@ -286,7 +286,7 @@ export const MemberEditPage = () => {
 
                   {/* 送信ボタン */}
                   <div className="flex justify-end gap-4 pt-6">
-                    <Button type="button" variant="outline" onClick={() => router("/members")}>
+                    <Button type="button" variant="outline" onClick={() => router("/")}>
                       キャンセル
                     </Button>
                     <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary/90">
