@@ -124,10 +124,6 @@ export const MemberListPage = () => {
     console.log("[v0] CSV download completed", { adminType, recordCount: dataToExport.length })
   }
 
-  const handleCSVButtonClick = () => {
-    setShowCSVDialog(true)
-  }
-
   const handleSearch = () => {
     const filteredAndSortedData = members.filter((members) => {
       const matchesEmail = emailInput === "" || members.email.toLowerCase().includes(emailInput.toLowerCase())
@@ -286,7 +282,7 @@ export const MemberListPage = () => {
             totalItems={totalItems}
             onPageChange={setCurrentPage}
             onItemsPerPageChange={setItemsPerPage}
-            onCSVExport={handleCSVButtonClick}
+            onCSVExport={() => setShowCSVDialog(true)}
             onNewRecord={() => (window.location.href = "/members-permissions/register")}
             onBulkImport={() => console.log("Bulk import clicked")}
             sortBy="registrationDate"
