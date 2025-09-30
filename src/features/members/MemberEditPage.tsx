@@ -156,7 +156,7 @@ export const MemberEditPage = () => {
                   <div className="grid grid-cols-2 gap-6">
                     {/* 名前 */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                         名前 <span className="text-red-500">*</span>
                       </label>
                       <Input
@@ -170,7 +170,7 @@ export const MemberEditPage = () => {
 
                     {/* メールアドレス */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                         メールアドレス <span className="text-red-500">*</span>
                         {fieldRestrictions.emailDisabled && (
                           <span className="text-sm text-gray-500 ml-2">(変更不可)</span>
@@ -199,7 +199,7 @@ export const MemberEditPage = () => {
 
                     {/* 所属組織 */}
                     <div className="col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1 text-left">
                         {adminType === "AM管理者" ? "AM管理者所属組織" : "外部管理者所属組織"}{" "}
                         <span className="text-red-500">*</span>
                         {fieldRestrictions.organizationDisabled && (
@@ -227,7 +227,7 @@ export const MemberEditPage = () => {
 
                   {/* 有効フラグ */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
                       有効フラグ <span className="text-red-500">*</span>
                     </label>
                     <div className="flex items-center space-x-2">
@@ -244,7 +244,7 @@ export const MemberEditPage = () => {
 
                   {/* 利用機能 */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 text-left">
                       利用機能 <span className="text-red-500">*</span>
                     </label>
                     <div className="flex gap-2 mb-3">
