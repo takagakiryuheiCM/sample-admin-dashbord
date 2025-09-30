@@ -210,7 +210,7 @@ export const MemberEditPage = () => {
                         <Input value={formData.organization} className="bg-gray-50 text-gray-700" disabled readOnly />
                       ) : (
                         <Autocomplete
-                          options={organizations}
+                          options={organizations.filter((organization) => organization.id !== "all")}
                           value={formData.organization}
                           onValueChange={(value) => handleInputChange("organization", value)}
                           placeholder="組織を選択または検索..."
