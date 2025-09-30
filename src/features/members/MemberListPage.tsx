@@ -15,141 +15,52 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { useMemberQuery, useOrganizationsQuery } from "@/features/members/hooks"
-import { Search } from "lucide-react"
-import { useMemo, useState } from "react"
+import {
+  useMemberQuery,
+  useOrganizationsQuery,
+  useMemberFilters,
+  useMemberPagination,
+  useMemberCSVExport,
+} from "@/features/members/hooks"
+import { useState } from "react"
 import { Link } from "react-router-dom"
-import type { Member } from "./sample-data/member"
 
 export const MemberListPage = () => {
   const { data: members } = useMemberQuery()
   const { data: organizationOptions } = useOrganizationsQuery()
 
-  const [searchMembersResult, setSearchMembersResult] = useState<Member[]>(members)
-  const [emailInput, setEmailInput] = useState("")
-  const [adminNameInput, setAdminNameInput] = useState("")
-  const [selectedOrganization, setSelectedOrganization] = useState("")
+  // Custom hooks for functionality
+  const {
+    emailInput,
+    setEmailInput,
+    adminNameInput,
+    setAdminNameInput,
+    selectedOrganization,
+    setSelectedOrganization,
+    hideInactiveAccounts,
+    setHideInactiveAccounts,
+    filteredMembers,
+  } = useMemberFilters(members, organizationOptions)
 
-  const [hideInactiveAccounts, setHideInactiveAccounts] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(30)
-  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest")
+  const {
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    setItemsPerPage,
+    sortOrder,
+    setSortOrder,
+    paginatedAndSortedMembers,
+    totalItems,
+    totalPages,
+  } = useMemberPagination(filteredMembers)
+
+  const { exportToCSV } = useMemberCSVExport()
+
   const [showCSVDialog, setShowCSVDialog] = useState(false)
 
-  const totalItems = searchMembersResult.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-
-  const currentData = useMemo(
-    () =>
-      searchMembersResult
-        .slice(startIndex, endIndex)
-        .sort((a, b) => {
-          const dateA = new Date(a.registrationDate).getTime()
-          const dateB = new Date(b.registrationDate).getTime()
-          return sortOrder === "newest" ? dateB - dateA : dateA - dateB
-        })
-        .filter((members) => {
-          return (
-            selectedOrganization === "" ||
-            selectedOrganization === "all" ||
-            members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
-          )
-        }),
-    [searchMembersResult, selectedOrganization, organizationOptions, sortOrder, startIndex, endIndex],
-  )
-
   const handleCSVDownload = (adminType?: "AM管理者" | "外部管理者") => {
-    console.log("[v0] Starting CSV download for members permissions data", { adminType })
-
-    // Filter data based on administrator type if specified
-    let dataToExport = searchMembersResult
-    if (adminType) {
-      dataToExport = searchMembersResult.filter((members) => {
-        const isAMAdmin = members.company === "イオンモール"
-        return adminType === "AM管理者" ? isAMAdmin : !isAMAdmin
-      })
-    }
-
-    // CSV headers in Japanese
-    const headers = [
-      "管理者ID",
-      "管理者名",
-      "メールアドレス",
-      "会社",
-      "組織1",
-      "組織2",
-      "組織3",
-      "ロール",
-      "ステータス",
-      "登録日時",
-    ]
-
-    // Use filtered data for CSV export
-    const csvData = dataToExport.map((members) => [
-      members.id,
-      members.name,
-      members.email,
-      members.company,
-      members.organization1,
-      members.organization2,
-      members.organization3,
-      members.role,
-      members.status,
-      members.registrationDate,
-    ])
-
-    // Create CSV content
-    const csvContent = [headers.join(","), ...csvData.map((row) => row.map((field) => `"${field}"`).join(","))].join(
-      "\n",
-    )
-
-    // Create and download file
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-    const link = document.createElement("a")
-    const url = URL.createObjectURL(blob)
-    link.setAttribute("href", url)
-    const filename = adminType
-      ? `管理者管理_${adminType}_${new Date().toISOString().split("T")[0]}.csv`
-      : `管理者管理_${new Date().toISOString().split("T")[0]}.csv`
-    link.setAttribute("download", filename)
-    link.style.visibility = "hidden"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-
+    exportToCSV(filteredMembers, adminType)
     setShowCSVDialog(false)
-
-    console.log("[v0] CSV download completed", { adminType, recordCount: dataToExport.length })
-  }
-
-  const handleSearch = () => {
-    const filteredAndSortedData = members.filter((members) => {
-      const matchesEmail = emailInput === "" || members.email.toLowerCase().includes(emailInput.toLowerCase())
-
-      const matchesAdminName =
-        adminNameInput === "" || members.name.toLowerCase().includes(adminNameInput.toLowerCase())
-
-      const matchesOrganization =
-        selectedOrganization === "" ||
-        selectedOrganization === "all" ||
-        members.organization1 === organizationOptions.find((opt) => opt.id === selectedOrganization)?.name
-
-      return matchesEmail && matchesAdminName && matchesOrganization
-    })
-
-    setSearchMembersResult(filteredAndSortedData)
-  }
-
-  const handleHideInactiveAccounts = (isChecked: boolean) => {
-    setHideInactiveAccounts(isChecked)
-
-    if (isChecked) {
-      setSearchMembersResult(searchMembersResult.filter((members) => members.status === "有効"))
-    } else {
-      setSearchMembersResult(members)
-    }
   }
 
   const getAdminType = (company: string) => {
@@ -167,9 +78,9 @@ export const MemberListPage = () => {
 
         {/* 検索フィルター */}
         <div className="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
-          <div className="grid grid-cols-12 gap-2">
+          <div className="grid grid-cols-3 gap-4">
             {/* 所属組織 (Autocomplete) */}
-            <div className="col-span-3">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">所属組織</label>
               <Autocomplete
                 options={organizationOptions}
@@ -182,7 +93,7 @@ export const MemberListPage = () => {
             </div>
 
             {/* メールアドレス */}
-            <div className="col-span-3">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
               <Input
                 placeholder="メールアドレスで検索"
@@ -193,7 +104,7 @@ export const MemberListPage = () => {
             </div>
 
             {/* 管理者名 */}
-            <div className="col-span-5">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">管理者名</label>
               <Input
                 placeholder="管理者名で検索"
@@ -202,31 +113,19 @@ export const MemberListPage = () => {
                 className="w-full"
               />
             </div>
-
-            {/* 検索ボタン */}
-            <div className="col-span-1 flex items-end">
-              <Button className="bg-primary hover:bg-primary/90" onClick={handleSearch}>
-                <Search className="w-4 h-4 mr-1" />
-                検索
-              </Button>
-            </div>
           </div>
 
           {/* 廃止アカウント非表示チェックボックス */}
-          <div className="grid grid-cols-12 gap-2 mt-4">
-            <div className="col-span-4">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="hide-inactive"
-                  checked={hideInactiveAccounts}
-                  onCheckedChange={(checked) => {
-                    handleHideInactiveAccounts(checked as boolean)
-                  }}
-                />
-                <label htmlFor="hide-inactive" className="text-sm font-medium text-gray-700">
-                  廃止アカウントを表示しない
-                </label>
-              </div>
+          <div className="mt-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="hide-inactive"
+                checked={hideInactiveAccounts}
+                onCheckedChange={(checked) => setHideInactiveAccounts(checked as boolean)}
+              />
+              <label htmlFor="hide-inactive" className="text-sm font-medium text-gray-700">
+                廃止アカウントを表示しない
+              </label>
             </div>
           </div>
         </div>
@@ -234,7 +133,7 @@ export const MemberListPage = () => {
         {/* テーブル表示エリア */}
         <div className="flex-1 bg-white px-6 py-4 overflow-y-auto">
           <DataTable
-            data={currentData}
+            data={paginatedAndSortedMembers}
             columns={[
               { key: "id", header: "管理者ID" },
               { key: "name", header: "管理者名" },
@@ -243,7 +142,7 @@ export const MemberListPage = () => {
                 key: "company",
                 header: "管理者タイプ",
                 render: (value) => {
-                  const adminType = getAdminType(value)
+                  const adminType = getAdminType(value as string)
                   return (
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
